@@ -1,0 +1,35 @@
+{
+  "cli": {
+    "version": ">= 9.1.0"
+  },
+  "build": {
+    "local": {
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {}
+    },
+    "development": {
+      "extends": "production",
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "extends": "production",
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_THIRDWEB_CLIENT_ID": "bd6c43208facc954e3a8e4add4b95750"
+      }
+    },
+    "test": {
+      "env": {
+        "EXPO_PUBLIC_THIRDWEB_CLIENT_ID": "bd6c43208facc954e3a8e4add4b95750"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
