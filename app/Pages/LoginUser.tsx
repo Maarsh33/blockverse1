@@ -1,34 +1,20 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image } from "react-native";
-import { contract } from "@/constants/thirdweb";
 import { useRouter } from "expo-router";
 import { ThemedButton as Button } from "@/components/ThemedButton";
-import { prepareContractCall, resolveMethod } from "thirdweb";
-import { useSendTransaction } from "thirdweb/react";
+import axios from "axios";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import Dropdown from "@/components/Dropdown";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 
-const CreateUserAccountPage = () => {
+const UserLogin = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  //const [DOB, setDOB] = useState("");
 
-  const { mutate: sendTransaction, isError } = useSendTransaction();
-
-  const handleCreateAccount = async () => {
-    //how to add details ? save them somewhere and save users
-    const publicKey = "8";
-
-    const transaction = await prepareContractCall({
-      contract,
-      method: resolveMethod("addUserIdentity"),
-      params: [username, password, publicKey],
-    });
-    await sendTransaction(transaction);
-
-    router.push("/Pages/SuccessCreateUserAccount");
+  const handleLogin = () => {
+    router.push("/Pages/LoginScreenUser");
   };
 
   return (
@@ -42,8 +28,9 @@ const CreateUserAccountPage = () => {
       }
     >
       <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
+
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Sign-Up</ThemedText>
+        <ThemedText type="title"> Sign In </ThemedText>
       </ThemedView>
 
       <View style={styles.inputContainer}>
@@ -51,10 +38,7 @@ const CreateUserAccountPage = () => {
           style={styles.input}
           placeholder="Enter your username / email"
           value={username}
-          onChangeText={(e) => {
-            console.log("args", e);
-            setUsername(e);
-          }}
+          onChangeText={setUsername}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -63,12 +47,18 @@ const CreateUserAccountPage = () => {
           placeholder="Enter your password"
           secureTextEntry
           value={password}
-          onChangeText={(e) => setPassword(e)}
+          onChangeText={setPassword}
         />
       </View>
-
-      <Button title="Create Account" onPress={handleCreateAccount} />
-      {/* </View> */}
+      <Button title="SignIn" onPress={handleLogin} />
+      {/* <Button
+        title="Create Account"
+        onPress={() => router.push("/create-account")}
+      /> */}
+      <Button
+        title="Delete Account"
+        onPress={() => router.push("/Pages/DeleteUserAccount")}
+      />
     </ParallaxScrollView>
   );
 };
@@ -80,10 +70,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f0",
   },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  reactLogo: {
+    height: "100%",
+    width: "100%",
+    bottom: 0,
+    left: 0,
+    position: "absolute",
   },
   input: {
     width: "80%",
@@ -98,25 +107,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  reactLogo: {
-    height: "100%",
-    width: "100%",
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
 });
 
-export default CreateUserAccountPage;
+export default UserLogin;

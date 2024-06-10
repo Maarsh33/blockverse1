@@ -12,11 +12,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <Tabs.Screen
-        name="Index"
+        name="index"
         options={{
           title: "BlockVerse",
           tabBarIcon: ({ color, focused }) => (

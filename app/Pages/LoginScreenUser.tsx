@@ -6,19 +6,21 @@ import { ThemedView } from "@/components/ThemedView";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 import { ThemedButton } from "@/components/ThemedButton";
 
-const Welcome = ({}) => {
+const LoginScreenUser = ({}) => {
   const router = useRouter();
-  const CreateUser = () => {
-    router.push("/Pages/CreateUserAccount");
+  //  should connect to oculas
+  const HandleMetaverse = () => {};
+  const HandleAddProfile = () => {
+    router.push("/Pages/AddProfileDetails");
   };
-  const HandleLoginUser = () => {
-    router.push("/Pages/SelectPlatform");
+  const HandleViewProfile = () => {
+    router.push("/Pages/AddProfileDetails");
   };
-  const CreatePlatform = () => {
-    router.push("/Pages/CreatePlatformAccount");
+  const HandleGiveAccess = () => {
+    router.push("/Pages/GiveAccess");
   };
-  const HandleLoginPlatform = () => {
-    router.push("/Pages/LoginPlatform");
+  const HandleLogOut = () => {
+    router.push("/Pages/Welcome");
   };
 
   return (
@@ -36,14 +38,17 @@ const Welcome = ({}) => {
           source={require("@/assets/images/logo.png")}
           style={styles.logo}
         />
-        <ThemedText type="title">Get Started!!</ThemedText>
+        <ThemedText type="title">Lets Start!!</ThemedText>
+        <ThemedText type="subtitle">
+          Empowering avatars, securing identities
+        </ThemedText>
       </ThemedView>
 
-      <ThemedButton title="Create User Account" onPress={CreateUser} />
-      <ThemedButton title="Create Platform Account" onPress={CreatePlatform} />
-      <ThemedText type="subtitle">Already have an account ?</ThemedText>
-      <ThemedButton title="Login as User" onPress={HandleLoginUser} />
-      <ThemedButton title="Login as Platform" onPress={HandleLoginPlatform} />
+      <ThemedButton title="Enter Metaverse" onPress={HandleMetaverse} />
+      <ThemedButton title="Add Profile Details" onPress={HandleAddProfile} />
+      <ThemedButton title="View Profile Details" onPress={HandleViewProfile} />
+      <ThemedButton title="Give Access" onPress={HandleGiveAccess} />
+      <ThemedButton title="LogOut" onPress={HandleLogOut} />
     </ParallaxScrollView>
   );
 };
@@ -84,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Welcome;
+export default LoginScreenUser;

@@ -5,20 +5,17 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 import { ThemedButton } from "@/components/ThemedButton";
+import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome for checkmark icon
 
-const Welcome = ({}) => {
+const LoginScreenPlatform = ({}) => {
   const router = useRouter();
-  const CreateUser = () => {
-    router.push("/Pages/CreateUserAccount");
+  //  should connect to oculas
+  const HandleViewUsers = () => {
+    router.push("/Pages/ViewUsers");
   };
-  const HandleLoginUser = () => {
-    router.push("/Pages/SelectPlatform");
-  };
-  const CreatePlatform = () => {
-    router.push("/Pages/CreatePlatformAccount");
-  };
-  const HandleLoginPlatform = () => {
-    router.push("/Pages/LoginPlatform");
+
+  const HandleLogOut = () => {
+    router.push("/Pages/Welcome");
   };
 
   return (
@@ -36,14 +33,22 @@ const Welcome = ({}) => {
           source={require("@/assets/images/logo.png")}
           style={styles.logo}
         />
-        <ThemedText type="title">Get Started!!</ThemedText>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">
+            LogIn Successfull{" "}
+            <FontAwesome name="check-circle" size={24} color="green" />
+          </ThemedText>
+        </ThemedView>
+
+        <ThemedText type="title">Lets Start!!</ThemedText>
+        <ThemedText type="subtitle">
+          Empowering avatars, securing identities
+        </ThemedText>
       </ThemedView>
 
-      <ThemedButton title="Create User Account" onPress={CreateUser} />
-      <ThemedButton title="Create Platform Account" onPress={CreatePlatform} />
-      <ThemedText type="subtitle">Already have an account ?</ThemedText>
-      <ThemedButton title="Login as User" onPress={HandleLoginUser} />
-      <ThemedButton title="Login as Platform" onPress={HandleLoginPlatform} />
+      <ThemedButton title="View Registered Users" onPress={HandleViewUsers} />
+
+      <ThemedButton title="LogOut" onPress={HandleLogOut} />
     </ParallaxScrollView>
   );
 };
@@ -84,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Welcome;
+export default LoginScreenPlatform;

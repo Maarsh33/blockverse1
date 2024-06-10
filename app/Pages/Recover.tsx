@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import { View, StyleSheet, TextInput, Image } from "react-native";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 import { ThemedView } from "@/components/ThemedView";
-import { useRouter } from "expo-router";
-import { ThemedButton as Button } from "@/components/ThemedButton";
+import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
+import { useRouter } from "expo-router";
 
-const CreatePlatformAccountScreen = ({}) => {
+const Recover = ({}) => {
+  const [username, setUsername] = useState("");
+  const [publicKey, setPublickkey] = useState("");
+  const [Fingerprint, setFingerprint] = useState("");
   const router = useRouter();
-  const [platformName, setPlatformName] = useState("");
-  const [platformNumber, setPlatformNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [key, setKey] = useState("");
 
-  const handleCreatePlatform = () => {
-    router.push("/Pages/SuccessCreatePlatformAccount");
+  const handleRecover = () => {
+    router.push("/Pages/SuccessRecover");
   };
 
   return (
@@ -28,55 +26,35 @@ const CreatePlatformAccountScreen = ({}) => {
         />
       }
     >
+      <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
       <ThemedView style={styles.titleContainer}>
-        <Image
-          source={require("@/assets/images/logo.png")}
-          style={styles.logo}
-        />
-        <ThemedText type="title">Create Account</ThemedText>
+        <ThemedText type="title">Recover Account</ThemedText>
       </ThemedView>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Platform Name"
-          value={platformName}
-          onChangeText={setPlatformName}
+          placeholder="User Name"
+          value={username}
+          onChangeText={setUsername}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Platform Number"
-          value={platformNumber}
-          onChangeText={setPlatformNumber}
+          placeholder="Public Key"
+          value={publicKey}
+          onChangeText={setPublickkey}
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
+          placeholder="Fingerprint"
+          value={Fingerprint}
+          onChangeText={setFingerprint}
         />
       </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Your Secret Key"
-          value={key}
-          onChangeText={setKey}
-        />
-      </View>
-      <Button title="Create Account" onPress={handleCreatePlatform} />
+      <ThemedButton title="Recover Account" onPress={handleRecover} />
     </ParallaxScrollView>
   );
 };
@@ -115,10 +93,11 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   inputContainer: {
+    flex: 1,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
   },
 });
 
-export default CreatePlatformAccountScreen;
+export default Recover;

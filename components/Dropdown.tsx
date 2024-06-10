@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
@@ -8,7 +8,7 @@ type DropdownProps = {
 };
 
 const Dropdown: React.FC<DropdownProps> = ({ items, onSelect }) => {
-  const [selectedValue, setSelectedValue] = React.useState("");
+  const [selectedValue, setSelectedValue] = useState("");
 
   return (
     <View style={styles.container}>
@@ -30,11 +30,12 @@ const Dropdown: React.FC<DropdownProps> = ({ items, onSelect }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "80%",
-    borderColor: "#ccc",
+    width: "100%", // Ensures the dropdown matches the width of the input fields
+    padding: 10,
     borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   picker: {
     width: "100%",
