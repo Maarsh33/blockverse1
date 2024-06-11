@@ -45,8 +45,10 @@ const LoginScreenUser = ({}) => {
       </ThemedView>
 
       <ThemedButton title="Enter Metaverse" onPress={HandleMetaverse} />
-      <ThemedButton title="Add Profile Details" onPress={HandleAddProfile} />
-      <ThemedButton title="View Profile Details" onPress={HandleViewProfile} />
+      <ThemedButton
+        title="Add/View Profile Details"
+        onPress={HandleAddProfile}
+      />
       <ThemedButton title="Give Access" onPress={HandleGiveAccess} />
       <ThemedButton title="LogOut" onPress={HandleLogOut} />
     </ParallaxScrollView>

@@ -1,32 +1,28 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  Image,
-  Modal,
   TouchableOpacity,
+  Modal,
   FlatList,
+  Button,
+  Image,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { ThemedButton } from "@/components/ThemedButton";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
-import { useColorScheme } from "react-native";
-import Dropdown from "@/components/Dropdown";
+import { useRouter } from "expo-router";
 
 const platforms = ["NED UET", "Habib University", "FAST UET"];
 
-const SelectPlatformPage = ({}) => {
-  const [selectedPlatform, setSelectedPlatform] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const router = useRouter(); // Initialize router
-  const colorScheme = useColorScheme();
+const SelectPlatform = () => {
+  const [platformModalVisible, setPlatformModalVisible] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const router = useRouter();
 
-  const handleSelect = (value: string) => {
-    setSelectedPlatform(value);
-    setModalVisible(false);
+  const handleSelect = (item: string) => {
+    setSelectedPlatform(item);
   };
 
   const handleLogin = () => {
@@ -45,26 +41,23 @@ const SelectPlatformPage = ({}) => {
         />
       }
     >
-      <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
       <ThemedView style={styles.titleContainer}>
-        <ThemedText style={styles.title}>
-          Select which metaverse platform you want to login to.
+        <Image
+          source={require("@/assets/images/logo.png")}
+          style={styles.logo}
+        />
+        <ThemedText type="title">
+          Select which platform you want to logIn to
         </ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.titleContainer}>
         <View style={styles.buttonWrapper}>
           <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: selectedPlatform
-                  ? colorScheme === "light"
-                    ? "#A1CEDC"
-                    : "#1D3D47"
-                  : "#ccc",
-              },
-            ]}
-            onPress={() => setModalVisible(true)}
+            style={styles.box}
+            onPress={() => setPlatformModalVisible(true)}
           >
-            <ThemedText style={{ color: "#fff" }}>
+            <ThemedText style={styles.boxText}>
               {selectedPlatform || "Select Platform"}
             </ThemedText>
           </TouchableOpacity>
@@ -74,11 +67,12 @@ const SelectPlatformPage = ({}) => {
         </View>
       </ThemedView>
 
+      {/* Platform Modal */}
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={platformModalVisible}
+        onRequestClose={() => setPlatformModalVisible(false)}
       >
         <View style={styles.modalContainer}>
           <ThemedView style={styles.modalView}>
@@ -87,37 +81,27 @@ const SelectPlatformPage = ({}) => {
               data={platforms}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={styles.platformItem}
+                  style={styles.option}
                   onPress={() => handleSelect(item)}
                 >
-                  <ThemedText>{item}</ThemedText>
+                  <ThemedText style={styles.optionText}>
+                    {selectedPlatform === item ? "✔ " : ""}
+                    {item}
+                  </ThemedText>
                 </TouchableOpacity>
               )}
               keyExtractor={(item) => item}
             />
-            {/* <View
-              style={[
-                styles.buttonWrapper,
-                { flexDirection: "row", justifyContent: "space-between" },
-              ]}
-            >
-              <ThemedButton
+            <View style={styles.modalButtons}>
+              <Button
                 title="Cancel"
-                onPress={() => setModalVisible(false)}
-                lightColor="#A1CEDC"
-                darkColor="#1D3D47"
-                variant="secondary"
+                onPress={() => setPlatformModalVisible(false)}
               />
-              <ThemedButton
+              <Button
                 title="OK"
-                onPress={() => {
-                  handleSelect(selectedPlatform);
-                  setModalVisible(false);
-                }}
-                lightColor="#A1CEDC"
-                darkColor="#1D3D47"
+                onPress={() => setPlatformModalVisible(false)}
               />
-            </View> */}
+            </View>
           </ThemedView>
         </View>
       </Modal>
@@ -131,23 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f0f0f0",
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    padding: 16,
   },
   reactLogo: {
     height: "100%",
@@ -156,22 +124,16 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  input: {
-    width: "80%",
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 10,
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    alignSelf: "center",
   },
   titleContainer: {
     flexDirection: "column",
     alignItems: "center",
     gap: 8,
-  },
-  buttonWrapper: {
-    width: "80%",
-    marginBottom: 10,
   },
   modalContainer: {
     flex: 1,
@@ -179,46 +141,60 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  buttonWrapper: {
+    width: "90%",
+    marginBottom: 10,
+  },
   modalView: {
     width: "80%",
-    borderRadius: 10,
+    backgroundColor: "black",
+    borderRadius: 20,
     padding: 20,
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 15,
+    textAlign: "center",
+    color: "white",
   },
-  platformItem: {
+  option: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
     width: "100%",
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
     alignItems: "center",
   },
-  button: {
+  optionText: {
+    color: "white",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "100%",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    marginTop: 20,
+  },
+  box: {
+    width: "100%",
+    padding: 12,
+    marginVertical: 10,
+    backgroundColor: "#fff",
     borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
+    elevation: 3,
+    flex: 1,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-    width: "80%",
+  boxText: {
+    color: "#000",
+    fontWeight: "600",
   },
 });
 
-export default SelectPlatformPage;
+export default SelectPlatform;

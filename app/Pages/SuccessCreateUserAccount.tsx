@@ -11,7 +11,7 @@ const SuccessCreateUserAccount = () => {
   const router = useRouter();
 
   const handleSuccessPress = () => {
-    router.push("/Pages/LoginUser");
+    router.push("/Pages/SelectPlatform");
   };
 
   return (
