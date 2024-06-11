@@ -1,61 +1,85 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Image,
+  KeyboardAvoidingView,
+} from "react-native";
 import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
+import { contract } from "@/constants/thirdweb";
+import { prepareContractCall, resolveMethod } from "thirdweb";
+import { useSendTransaction } from "thirdweb/react";
 
-const Recover = ({}) => {
+const Recover = () => {
   const [username, setUsername] = useState("");
-  const [publicKey, setPublickkey] = useState("");
-  const [Fingerprint, setFingerprint] = useState("");
+  const [publicKey, setPublicKey] = useState(""); // Fixed typo here
+  const [fingerprint, setFingerprint] = useState(""); // Changed variable name to lowercase
   const router = useRouter();
+  const { mutate: sendTransaction, isError } = useSendTransaction();
 
-  const handleRecover = () => {
-    router.push("/Pages/SuccessRecover");
+  const handleRecover = async () => {
+    const transaction = await prepareContractCall({
+      contract,
+      method: resolveMethod("recoverUserIdentity"),
+      params: [username, publicKey, fingerprint],
+    });
+    await sendTransaction(transaction);
+    router.push("/Pages/SuccessRecover"); // Moved inside handleRecover function
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/title.png")}
-          style={styles.reactLogo}
-        />
-      }
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding" // Set the behavior to "padding"
     >
-      <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Recover Account</ThemedText>
-      </ThemedView>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="User Name"
-          value={username}
-          onChangeText={setUsername}
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+        headerImage={
+          <Image
+            source={require("@/assets/images/title.png")}
+            style={styles.reactLogo}
+          />
+        }
+      >
+        <Image
+          source={require("@/assets/images/logo.png")}
+          style={styles.logo}
         />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Public Key"
-          value={publicKey}
-          onChangeText={setPublickkey}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Fingerprint"
-          value={Fingerprint}
-          onChangeText={setFingerprint}
-        />
-      </View>
-      <ThemedButton title="Recover Account" onPress={handleRecover} />
-    </ParallaxScrollView>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Recover Account</ThemedText>
+        </ThemedView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { color: "white" }]}
+            placeholder="User Name"
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { color: "white" }]}
+            placeholder="Public Key"
+            value={publicKey}
+            onChangeText={setPublicKey}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { color: "white" }]}
+            placeholder="Fingerprint"
+            value={fingerprint}
+            onChangeText={setFingerprint}
+          />
+        </View>
+        <ThemedButton title="Recover Account" onPress={handleRecover} />
+      </ParallaxScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

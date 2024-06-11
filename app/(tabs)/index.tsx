@@ -35,10 +35,6 @@ export default function HomeScreen() {
         title="Get Started"
         onPress={() => router.push("/Pages/GetStarted")}
       />
-      <ThemedButton
-        title="Recover Your Identity"
-        onPress={() => router.push("/Pages/Recover")}
-      />
     </ParallaxScrollView>
   );
 }

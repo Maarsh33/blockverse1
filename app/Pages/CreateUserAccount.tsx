@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+} from "react-native";
 import { contract } from "@/constants/thirdweb";
 import { useRouter } from "expo-router";
 import { ThemedButton as Button } from "@/components/ThemedButton";
@@ -32,44 +39,52 @@ const CreateUserAccountPage = () => {
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/title.png")}
-          style={styles.reactLogo}
-        />
-      }
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding" // Set the behavior to "padding"
     >
-      <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Sign-Up</ThemedText>
-      </ThemedView>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your username / email"
-          value={username}
-          onChangeText={(e) => {
-            console.log("args", e);
-            setUsername(e);
-          }}
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+        headerImage={
+          <Image
+            source={require("@/assets/images/title.png")}
+            style={styles.reactLogo}
+          />
+        }
+      >
+        <Image
+          source={require("@/assets/images/logo.png")}
+          style={styles.logo}
         />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          secureTextEntry
-          value={password}
-          onChangeText={(e) => setPassword(e)}
-        />
-      </View>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Sign-Up</ThemedText>
+        </ThemedView>
 
-      <Button title="Create Account" onPress={handleCreateAccount} />
-      {/* </View> */}
-    </ParallaxScrollView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your username / email"
+            value={username}
+            onChangeText={(e) => {
+              console.log("args", e);
+              setUsername(e);
+            }}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            secureTextEntry
+            value={password}
+            onChangeText={(e) => setPassword(e)}
+          />
+        </View>
+
+        <Button title="Create Account" onPress={handleCreateAccount} />
+        {/* </View> */}
+      </ParallaxScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

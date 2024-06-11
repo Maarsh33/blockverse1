@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -38,12 +38,20 @@ const Welcome = ({}) => {
         />
         <ThemedText type="title">Get Started!!</ThemedText>
       </ThemedView>
-
+      <ThemedText type="subtitle">
+        Empowering avatars, securing identities
+      </ThemedText>
       <ThemedButton title="Create User Account" onPress={CreateUser} />
       <ThemedButton title="Create Platform Account" onPress={CreatePlatform} />
       <ThemedText type="subtitle">Already have an account ?</ThemedText>
-      <ThemedButton title="Login as User" onPress={HandleLoginUser} />
-      <ThemedButton title="Login as Platform" onPress={HandleLoginPlatform} />
+      <View style={styles.buttonContainer}>
+        <ThemedButton title="Login as User" onPress={HandleLoginUser} />
+        <ThemedButton title="Login as Platform" onPress={HandleLoginPlatform} />
+      </View>
+      <ThemedButton
+        title="Recover Your Identity"
+        onPress={() => router.push("/Pages/Recover")}
+      />
     </ParallaxScrollView>
   );
 };
@@ -54,6 +62,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f0f0f0",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between", // Adjust as needed
+    marginTop: 10, // Add space if necessary
   },
   titleContainer: {
     flexDirection: "column",

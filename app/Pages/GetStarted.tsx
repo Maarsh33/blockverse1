@@ -68,6 +68,9 @@ export default function HomeScreen() {
           style={styles.logo}
         />
         <ThemedText type="title">Welcome To BlockVerse</ThemedText>
+        <ThemedText type="subtitle">
+          Empowering avatars, securing identities
+        </ThemedText>
       </ThemedView>
       <ConnectSection />
     </ParallaxScrollView>

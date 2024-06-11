@@ -9,24 +9,24 @@ import { ParallaxScrollView } from "@/components/ParallaxScrollView";
 import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome for checkmark icon
 
 const SuccessGiveAccess = () => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [selectedProfileDetails, setSelectedProfileDetails] = useState<
-    string[]
-  >([]);
-  const [permission, setPermission] = useState<string | null>("");
+  //   const location = useLocation();
+  //   const searchParams = new URLSearchParams(location.search);
+  //   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  //   const [selectedProfileDetails, setSelectedProfileDetails] = useState<
+  //     string[]
+  //   >([]);
+  //   const [permission, setPermission] = useState<string | null>("");
 
-  useEffect(() => {
-    const platforms = searchParams.get("selectedPlatforms")?.split(",") || [];
-    const profileDetails =
-      searchParams.get("selectedProfileDetails")?.split(",") || [];
-    const permissionValue = searchParams.get("permission") || "";
+  //   useEffect(() => {
+  //     const platforms = searchParams.get("selectedPlatforms")?.split(",") || [];
+  //     const profileDetails =
+  //       searchParams.get("selectedProfileDetails")?.split(",") || [];
+  //     const permissionValue = searchParams.get("permission") || "";
 
-    setSelectedPlatforms(platforms);
-    setSelectedProfileDetails(profileDetails);
-    setPermission(permissionValue);
-  }, []);
+  //     setSelectedPlatforms(platforms);
+  //     setSelectedProfileDetails(profileDetails);
+  //     setPermission(permissionValue);
+  //   }, []);
 
   const router = useRouter();
 
@@ -56,7 +56,7 @@ const SuccessGiveAccess = () => {
         <ThemedText type="subtitle">Access Has been Granted</ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.choicesContainer}>
+      {/* <ThemedView style={styles.choicesContainer}>
         <ThemedText type="subtitle">
           Platform: {selectedPlatforms.join(", ")}
         </ThemedText>
@@ -64,7 +64,7 @@ const SuccessGiveAccess = () => {
           Profile Details: {selectedProfileDetails.join(", ")}
         </ThemedText>
         <ThemedText type="subtitle">Permission: {permission}</ThemedText>
-      </ThemedView>
+      </ThemedView> */}
 
       <Button title="Home" onPress={handleHome} />
       <Button title="Enter Metaverse" onPress={handleMeta} />
