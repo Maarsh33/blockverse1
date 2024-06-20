@@ -20,6 +20,9 @@ const Welcome = ({}) => {
   const HandleLoginPlatform = () => {
     router.push("/Pages/LoginPlatform");
   };
+  const HandlePublicKey = () => {
+    router.push("/Pages/PublicKey");
+  };
 
   return (
     <ParallaxScrollView
@@ -52,6 +55,7 @@ const Welcome = ({}) => {
         title="Recover Your Identity"
         onPress={() => router.push("/Pages/Recover")}
       />
+      <ThemedButton title="Generate Public Key" onPress={HandlePublicKey} />
     </ParallaxScrollView>
   );
 };
