@@ -10,20 +10,31 @@ const contractAddress = "0xF03D9e90Ba5c429CdC83f011F37BC7005202F2C0"; // Replace
 // Function to get all transactions related to a contract address
 async function getContractTransactions(contractAddress) {
   // Get the contract creation transaction (first transaction)
+  //const creationTx = await provider.getTransaction(contractAddress);
   const creationTx = await provider.getTransaction(
-    "0x3ab8d4d65ea4798a329f4fe527d979178f81c86d0df35c3caef69d93373b32f1"
+    `0x3ab8d4d65ea4798a329f4fe527d979178f81c86d0df35c3caef69d93373b32f1`
   );
-  // console.log("Contract Creation Transaction:", creationTx);
+  console.log("Contract Creation Transaction:", creationTx);
 
-  // Get all transactions sent to the contract address
+  //   const creationBlockNumber = creationTx.blockNumber;
+  //   console.log("creationBlockNumber:");
+  //console.log(creationTx);
+
+  // Get all transactions sent to or from the contract address
   const filterTo = {
     address: contractAddress,
     fromBlock: 5970245,
     toBlock: "latest",
-    //toBlock: 6056637,
+  };
+
+  const filterFrom = {
+    address: contractAddress,
+    fromBlock: 5970245,
+    toBlock: "latest",
   };
 
   const transactionsTo = await provider.getLogs(filterTo);
+  const transactionsFrom = await provider.getLogs(filterFrom);
 
   console.log("\nEvaluating contract transactions:");
 
@@ -49,8 +60,29 @@ async function getContractTransactions(contractAddress) {
     console.log("\nThroughput:");
     await getThroughput(startBlock, endBlock, durationInSeconds);
 
-    console.log("\nTransaction Fee:");
-    await getTransactionFee(txHash);
+    console.log("---------------------------");
+  }
+
+  for (let i = 0; i < transactionsFrom.length; i++) {
+    const txHash = transactionsFrom[i].transactionHash;
+
+    console.log(`Transaction Hash (From Contract): ${txHash}`);
+    console.log("\nGas Cost:");
+    await getTransactionGasCost(txHash);
+
+    console.log("\nGas Limit:");
+    await getGasLimit(txHash);
+
+    const endBlock = transactionsFrom[i].blockNumber;
+    const startBlock = endBlock - 10; // Adjust as needed
+
+    console.log("\nBlock Period:");
+    await getBlockPeriod(startBlock, endBlock);
+
+    const durationInSeconds = 60; // Replace with desired duration in seconds
+
+    console.log("\nThroughput:");
+    await getThroughput(startBlock, endBlock, durationInSeconds);
 
     console.log("---------------------------");
   }
@@ -121,25 +153,6 @@ async function getThroughput(startBlock, endBlock, durationInSeconds) {
   const throughput = blockCount / (endTime - startTime);
 
   console.log(`Throughput: ${throughput.toFixed(2)} transactions per second`);
-}
-
-// Function to calculate the transaction fee
-async function getTransactionFee(txHash) {
-  try {
-    const receipt = await provider.getTransactionReceipt(txHash);
-    if (!receipt) {
-      throw new Error(`Receipt not found for transaction hash ${txHash}`);
-    }
-    const gasUsed = receipt.gasUsed;
-    const effectiveGasPrice = receipt.effectiveGasPrice;
-    const transactionFee = gasUsed.mul(effectiveGasPrice);
-
-    console.log(
-      `Transaction Fee: ${ethers.utils.formatEther(transactionFee)} ETH`
-    );
-  } catch (error) {
-    console.error(`Error fetching transaction fee: ${error.message}`);
-  }
 }
 
 // Main function to run the evaluation for the contract address
