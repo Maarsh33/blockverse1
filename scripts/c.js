@@ -1,10 +1,4 @@
 const { ethers } = require("ethers");
-const fs = require("fs");
-const path = require("path");
-
-// Load the ABI from the file
-const abiPath = path.join(__dirname, "contractABI.json");
-const contractABI = JSON.parse(fs.readFileSync(abiPath, "utf8"));
 
 const provider = new ethers.providers.JsonRpcProvider(
   "https://rpc.sepolia.org"
@@ -13,24 +7,13 @@ const provider = new ethers.providers.JsonRpcProvider(
 // Define the contract address you want to analyze
 const contractAddress = "0xF03D9e90Ba5c429CdC83f011F37BC7005202F2C0"; // Replace with your contract address
 
-const contractInterface = new ethers.utils.Interface(contractABI);
-
-// Function to truncate strings for better table display
-function truncateString(str, num) {
-  if (str.length > num) {
-    return str.slice(0, num) + "...";
-  } else {
-    return str;
-  }
-}
-
 // Function to get all transactions related to a contract address
 async function getContractTransactions(contractAddress) {
   // Get all transactions sent to the contract address
   const filterTo = {
     address: contractAddress,
-    fromBlock: 6214184,
-    toBlock: 6214225,
+    fromBlock: 6005139,
+    toBlock: 6056638,
   };
 
   const transactionsTo = await provider.getLogs(filterTo);
@@ -44,8 +27,7 @@ async function getContractTransactions(contractAddress) {
   for (let i = 0; i < transactionsTo.length; i++) {
     const txHash = transactionsTo[i].transactionHash;
 
-    const method = await getTransactionMethod(txHash);
-    const gasCostDetails = await getTransactionGasCost(txHash);
+    const gasCost = await getTransactionGasCost(txHash);
     const gasLimit = await getGasLimit(txHash);
 
     const endBlock = transactionsTo[i].blockNumber;
@@ -60,23 +42,16 @@ async function getContractTransactions(contractAddress) {
       durationInSeconds
     );
 
-    const transactionFeeGwei = await getTransactionFee(txHash);
-    const transactionFeeEth = ethers.utils.formatEther(
-      transactionFeeGwei * 1e9
-    );
+    const transactionFee = await getTransactionFee(txHash);
 
     // Push details to the array
     transactionsDetails.push({
-      "Tx Hash": truncateString(txHash, 15),
-      Method: method,
-      "Gas Used": gasCostDetails.gasUsed,
-      "Gas Price (Gwei)": gasCostDetails.gasPrice,
-      "Gas Cost (ETH)": gasCostDetails.totalGasCost,
+      "Transaction Hash": txHash,
+      "Gas Cost (Gwei)": gasCost,
       "Gas Limit": gasLimit,
-      "Block Pd (s)": truncateString(blockPeriod, 5),
-      TPS: truncateString(throughput, 5),
-      "Tx Fee (Gwei)": transactionFeeGwei,
-      "Tx Fee (ETH)": transactionFeeEth,
+      "Block Period (seconds)": blockPeriod,
+      "Throughput (tx/s)": throughput,
+      "Transaction Fee (Gwei)": transactionFee,
     });
   }
 
@@ -84,42 +59,18 @@ async function getContractTransactions(contractAddress) {
   console.table(transactionsDetails);
 }
 
-// Function to get the method of a transaction
-async function getTransactionMethod(txHash) {
-  try {
-    const tx = await provider.getTransaction(txHash);
-    const decodedData = contractInterface.parseTransaction({
-      data: tx.data,
-      value: tx.value,
-    });
-    return decodedData.name;
-  } catch (error) {
-    console.error(`Error fetching transaction method: ${error.message}`);
-    return "Unknown";
-  }
-}
-
 // Function to get the transaction gas cost
 async function getTransactionGasCost(txHash) {
   try {
     const tx = await provider.getTransaction(txHash);
-    if (!tx) {
-      throw new Error(`Transaction not found for hash ${txHash}`);
-    }
     const receipt = await provider.getTransactionReceipt(txHash);
-    if (!receipt) {
-      throw new Error(`Receipt not found for transaction hash ${txHash}`);
-    }
-    const gasUsed = receipt.gasUsed.toString();
-    const gasPrice = ethers.utils.formatUnits(tx.gasPrice, "gwei");
-    const totalGasCost = ethers.utils.formatEther(
-      receipt.gasUsed.mul(tx.gasPrice)
-    );
-
-    return { gasUsed, gasPrice, totalGasCost };
+    const gasUsed = receipt.gasUsed;
+    const gasPrice = tx.gasPrice;
+    const totalGasCost = gasUsed.mul(gasPrice);
+    return ethers.utils.formatUnits(totalGasCost, "gwei");
   } catch (error) {
     console.error(`Error fetching transaction details: ${error.message}`);
-    return { gasUsed: "Error", gasPrice: "Error", totalGasCost: "Error" };
+    return "Error";
   }
 }
 

@@ -1,0 +1,310 @@
+[
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "attributeID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "platform",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "permission",
+        "type": "string"
+      }
+    ],
+    "name": "AccessPolicyAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fingerprint",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "attributeKey",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "attributeValue",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "AttributeAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "username",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fingerprint",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "publicKey",
+        "type": "string"
+      }
+    ],
+    "name": "UserIdentityAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "username",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "oldPublicKey",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newPublicKey",
+        "type": "string"
+      }
+    ],
+    "name": "UserIdentityRecovered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "username",
+        "type": "string"
+      }
+    ],
+    "name": "UserIdentityRevoked",
+    "type": "event"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "accessPolicies",
+    "outputs": [
+      { "internalType": "string", "name": "attributeID", "type": "string" },
+      { "internalType": "string", "name": "platform", "type": "string" },
+      { "internalType": "string", "name": "permission", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_attributeID", "type": "string" },
+      { "internalType": "string", "name": "_platform", "type": "string" },
+      { "internalType": "string", "name": "_permission", "type": "string" }
+    ],
+    "name": "addAccessPolicy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_fingerprint", "type": "string" },
+      { "internalType": "string", "name": "_attributeKey", "type": "string" },
+      { "internalType": "string", "name": "_attributeValue", "type": "string" },
+      { "internalType": "uint256", "name": "_timestamp", "type": "uint256" }
+    ],
+    "name": "addAttribute",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_username", "type": "string" },
+      { "internalType": "string", "name": "_fingerprint", "type": "string" },
+      { "internalType": "string", "name": "_publicKey", "type": "string" }
+    ],
+    "name": "addUserIdentity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_attributeID", "type": "string" },
+      { "internalType": "string", "name": "_platform", "type": "string" }
+    ],
+    "name": "getAccessPolicy",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_fingerprint", "type": "string" },
+      { "internalType": "string", "name": "_attributeKey", "type": "string" }
+    ],
+    "name": "getAttribute",
+    "outputs": [
+      { "internalType": "string", "name": "", "type": "string" },
+      { "internalType": "string", "name": "", "type": "string" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_fingerprint", "type": "string" }
+    ],
+    "name": "getUserAttributes",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "key", "type": "string" },
+          { "internalType": "string", "name": "value", "type": "string" },
+          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+        ],
+        "internalType": "struct IdentityAndAccessManagement.Attribute[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_fingerprint", "type": "string" }
+    ],
+    "name": "getUserAttributesCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "publicKeys",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_username", "type": "string" },
+      { "internalType": "string", "name": "_newPublicKey", "type": "string" },
+      { "internalType": "string", "name": "_fingerprint", "type": "string" }
+    ],
+    "name": "recoverUserIdentity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "retrievePublicKey",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_username", "type": "string" },
+      { "internalType": "string", "name": "_fingerprint", "type": "string" }
+    ],
+    "name": "revokeUserIdentity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_publicKey", "type": "string" }
+    ],
+    "name": "setPublicKey",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "usedFingerprints",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "", "type": "string" },
+      { "internalType": "string", "name": "", "type": "string" }
+    ],
+    "name": "userAttributes",
+    "outputs": [
+      { "internalType": "string", "name": "key", "type": "string" },
+      { "internalType": "string", "name": "value", "type": "string" },
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "userIdentities",
+    "outputs": [
+      { "internalType": "string", "name": "username", "type": "string" },
+      { "internalType": "string", "name": "fingerprint", "type": "string" },
+      { "internalType": "string", "name": "publicKey", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "userIdentityKeys",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

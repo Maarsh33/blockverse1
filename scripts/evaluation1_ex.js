@@ -1,83 +1,164 @@
-// Ensure the Ethers.js library is imported correctly
 const { ethers } = require("ethers");
 
-// Initialize the provider with the Sepolia RPC URL
+const fs = require("fs");
+const path = require("path");
+
+// Load the ABI from the file
+const abiPath = path.join(__dirname, "contractABI.json");
+const contractABI = JSON.parse(fs.readFileSync(abiPath, "utf8"));
+
 const provider = new ethers.providers.JsonRpcProvider(
   "https://rpc.sepolia.org"
 );
 
-// Define the transaction hash you want to evaluate
-const transactionHash =
-  "0xfa4f644f1b68f7b2ad72d94eab2b5963eec140bdfb4b98cbdd45b8b7afd49ae9"; // Replace with your transaction hash
+// Define the contract address you want to analyze
+const contractAddress = "0xF03D9e90Ba5c429CdC83f011F37BC7005202F2C0"; // Replace with your contract address
+
+const contractInterface = new ethers.utils.Interface(contractABI);
+
+// Function to get all transactions related to a contract address
+async function getContractTransactions(contractAddress) {
+  // Get all transactions sent to the contract address
+  const filterTo = {
+    address: contractAddress,
+    fromBlock: 6214184,
+    toBlock: 6214225,
+  };
+
+  const transactionsTo = await provider.getLogs(filterTo);
+
+  console.log("\nEvaluating contract transactions:");
+
+  // Array to store transaction details
+  const transactionsDetails = [];
+
+  // Evaluate each transaction
+  for (let i = 0; i < transactionsTo.length; i++) {
+    const txHash = transactionsTo[i].transactionHash;
+
+    const method = await getTransactionMethod(txHash);
+    const gasCost = await getTransactionGasCost(txHash);
+    const gasLimit = await getGasLimit(txHash);
+
+    const endBlock = transactionsTo[i].blockNumber;
+    const startBlock = endBlock - 10; // Adjust as needed
+
+    const blockPeriod = await getBlockPeriod(startBlock, endBlock);
+
+    const durationInSeconds = 60; // Replace with desired duration in seconds
+    const throughput = await getThroughput(
+      startBlock,
+      endBlock,
+      durationInSeconds
+    );
+
+    const transactionFee = await getTransactionFee(txHash);
+
+    // Push details to the array
+    transactionsDetails.push({
+      "Transaction Hash": txHash,
+      Method: method,
+      "Gas Cost (Gwei)": gasCost,
+      "Gas Limit": gasLimit,
+      "Block Period (seconds)": blockPeriod,
+      "Throughput (tx/s)": throughput,
+      "Transaction Fee (Gwei)": transactionFee,
+    });
+  }
+
+  // Display transactions details as a table
+  console.table(transactionsDetails);
+}
+
+// Function to get the method of a transaction
+async function getTransactionMethod(txHash) {
+  try {
+    const tx = await provider.getTransaction(txHash);
+    const decodedData = contractInterface.parseTransaction({
+      data: tx.data,
+      value: tx.value,
+    });
+    return decodedData.name;
+  } catch (error) {
+    console.error(`Error fetching transaction method: ${error.message}`);
+    return "Unknown";
+  }
+}
 
 // Function to get the transaction gas cost
 async function getTransactionGasCost(txHash) {
-  const tx = await provider.getTransaction(txHash);
-  const receipt = await provider.getTransactionReceipt(txHash);
-  const gasUsed = receipt.gasUsed;
-  const gasPrice = tx.gasPrice;
-  const totalGasCost = gasUsed.mul(gasPrice);
-
-  console.log(`Gas Used: ${gasUsed.toString()}`);
-  console.log(`Gas Price: ${ethers.utils.formatUnits(gasPrice, "gwei")} Gwei`);
-  console.log(`Total Gas Cost: ${ethers.utils.formatEther(totalGasCost)} ETH`);
+  try {
+    const tx = await provider.getTransaction(txHash);
+    const receipt = await provider.getTransactionReceipt(txHash);
+    const gasUsed = receipt.gasUsed;
+    const gasPrice = tx.gasPrice;
+    const totalGasCost = gasUsed.mul(gasPrice);
+    return ethers.utils.formatUnits(totalGasCost, "gwei");
+  } catch (error) {
+    console.error(`Error fetching transaction details: ${error.message}`);
+    return "Error";
+  }
 }
 
 // Function to get the gas limit of a transaction
 async function getGasLimit(txHash) {
-  const tx = await provider.getTransaction(txHash);
-  const gasLimit = tx.gasLimit;
-
-  console.log(`Gas Limit: ${gasLimit.toString()}`);
+  try {
+    const tx = await provider.getTransaction(txHash);
+    return tx.gasLimit.toString();
+  } catch (error) {
+    console.error(`Error fetching gas limit: ${error.message}`);
+    return "Error";
+  }
 }
 
 // Function to calculate the average block period between two blocks
 async function getBlockPeriod(startBlock, endBlock) {
-  const startBlockDetails = await provider.getBlock(startBlock);
-  const endBlockDetails = await provider.getBlock(endBlock);
-  const startTime = startBlockDetails.timestamp;
-  const endTime = endBlockDetails.timestamp;
-  const blockPeriod = (endTime - startTime) / (endBlock - startBlock);
-
-  console.log(`Block Period: ${blockPeriod} seconds`);
+  try {
+    const startBlockDetails = await provider.getBlock(startBlock);
+    const endBlockDetails = await provider.getBlock(endBlock);
+    const startTime = startBlockDetails.timestamp;
+    const endTime = endBlockDetails.timestamp;
+    const blockPeriod = (endTime - startTime) / (endBlock - startBlock);
+    return blockPeriod.toFixed(2);
+  } catch (error) {
+    console.error(`Error fetching block period: ${error.message}`);
+    return "Error";
+  }
 }
 
 // Function to calculate the throughput (transactions per second) over a given duration
-async function getThroughput(blockNumber, durationInSeconds) {
-  const startBlock = await provider.getBlock(blockNumber);
-  const endBlock = await provider.getBlock(
-    blockNumber + Math.floor(durationInSeconds / 13)
-  ); // Approx 13s per block on Sepolia
-
-  const startTime = startBlock.timestamp;
-  const endTime = endBlock.timestamp;
-  const blockCount =
-    blockNumber + Math.floor(durationInSeconds / 13) - blockNumber;
-
-  const throughput = blockCount / (endTime - startTime);
-
-  console.log(`Throughput: ${throughput.toFixed(2)} transactions per second`);
+async function getThroughput(startBlock, endBlock, durationInSeconds) {
+  try {
+    const blockCount = endBlock - startBlock + 1;
+    const startBlockDetails = await provider.getBlock(startBlock);
+    const endBlockDetails = await provider.getBlock(endBlock);
+    const startTime = startBlockDetails.timestamp;
+    const endTime = endBlockDetails.timestamp;
+    const throughput = blockCount / (endTime - startTime);
+    return throughput.toFixed(2);
+  } catch (error) {
+    console.error(`Error fetching throughput: ${error.message}`);
+    return "Error";
+  }
 }
 
-// Main function to run the evaluation
+// Function to calculate the transaction fee
+async function getTransactionFee(txHash) {
+  try {
+    const receipt = await provider.getTransactionReceipt(txHash);
+    const gasUsed = receipt.gasUsed;
+    const effectiveGasPrice = receipt.effectiveGasPrice;
+    const transactionFee = gasUsed.mul(effectiveGasPrice);
+    return ethers.utils.formatUnits(transactionFee, "gwei");
+  } catch (error) {
+    console.error(`Error fetching transaction fee: ${error.message}`);
+    return "Error";
+  }
+}
+
+// Main function to run the evaluation for the contract address
 async function main() {
-  console.log("Transaction Gas Cost:");
-  await getTransactionGasCost(transactionHash);
-
-  console.log("\nGas Limit:");
-  await getGasLimit(transactionHash);
-
-  const startBlock = 0; // Replace with actual start block
-  const endBlock = 10; // Replace with actual end block
-
-  console.log("\nBlock Period:");
-  await getBlockPeriod(startBlock, endBlock);
-
-  const blockNumber = 6072293; // Replace with actual block number
-  const durationInSeconds = 60; // Replace with desired duration in seconds
-
-  console.log("\nThroughput:");
-  await getThroughput(blockNumber, durationInSeconds);
+  await getContractTransactions(contractAddress);
 }
 
 // Run the main function
